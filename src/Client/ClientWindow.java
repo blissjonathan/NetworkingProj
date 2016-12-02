@@ -4,10 +4,21 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
 import java.awt.BorderLayout;
+
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.Scanner;
+
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
@@ -47,6 +58,33 @@ public class ClientWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		
+		InputStream serverInput = null;
+        OutputStream serverOutput = null;
+        Scanner scan = null;
+        OutputStreamWriter osw = null;
+
+            Socket socket;
+			try {
+				socket = new Socket("127.0.0.1", 5021);
+	            serverOutput = socket.getOutputStream();
+	            serverInput = socket.getInputStream();
+	            scan = new Scanner(serverInput);
+	            osw = new OutputStreamWriter(serverOutput);
+	            String message = scan.nextLine();
+	            System.out.println(message);
+	             
+	            Scanner keyboard = new Scanner(System.in);
+			} catch (UnknownHostException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+		
+		
 		frmClient = new JFrame();
 		frmClient.setTitle("Client");
 		frmClient.setBounds(100, 100, 430, 407);
