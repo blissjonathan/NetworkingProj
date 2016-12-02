@@ -1,5 +1,8 @@
 package Server;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -49,11 +52,25 @@ public class ClientHandler extends Thread
     	  }
     }
     
-    public void readFile(String fileName) {
-    	for(int i = 0; i < files.size(); i++) {
-    		
+    public String readFile(String fileName) throws IOException {
+    	String output = "";
+    	String line = null;
+    	
+    		 FileReader fileReader;
+			try {
+				fileReader = new FileReader(fileName);
+				BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+	            while((line = bufferedReader.readLine()) != null) {
+	                output = output + line;
+	            }   
+	            bufferedReader.close();         
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+    	
+    	 return line;           
     	}
-    }
     
     public void refresh() {
     	
