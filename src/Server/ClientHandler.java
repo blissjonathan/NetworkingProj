@@ -36,7 +36,7 @@ public class ClientHandler extends Thread
             
     }
     
-    public void readFile() {
+    public void getFiles() {
     	File dir = new File("./files/");
     	  File[] directoryListing = dir.listFiles();
     	  if (directoryListing != null) {
@@ -49,12 +49,26 @@ public class ClientHandler extends Thread
     	  }
     }
     
-    public void refresh(String fileName) {
+    public void readFile(String fileName) {
+    	for(int i = 0; i < files.size(); i++) {
+    		
+    	}
+    }
+    
+    public void refresh() {
     	
     }
     
     public void checkIn() {
     	
+    	
+    }
+    
+    public void checkOut() {
+    	
+    }
+    
+    public void getLatest() {
     	
     }
     
@@ -79,13 +93,17 @@ public class ClientHandler extends Thread
                 if (!( message.equals("Exit")))
                 {
                 	if(message.equals("Check In")) {
-                		
+                		checkIn();
                 	}
                 	if(message.equals("Check Out")) {
-                		
+                		checkOut();
                 	}
                 	if(message.equals("Refresh")) {
-                		
+                		refresh();
+                	}
+                	
+                	if(message.equals("Latest")) {
+                		getLatest();
                 	}
                     osw.write(message + "\r\n");
                     osw.flush();
