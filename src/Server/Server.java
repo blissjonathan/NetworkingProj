@@ -24,6 +24,7 @@ public class Server
         server = new ServerSocket(portNumber); 
     }
     
+    
     public void acceptConnection() throws IOException
     {
         clientConnection = server.accept();

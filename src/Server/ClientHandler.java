@@ -1,9 +1,11 @@
 package Server;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ClientHandler extends Thread
@@ -13,6 +15,8 @@ public class ClientHandler extends Thread
     private OutputStream clientOutput;
     private Scanner scanner;
     private OutputStreamWriter osw;
+    ArrayList<clientFile> files = new ArrayList<clientFile>();
+    
     
     public ClientHandler(Socket conn)
     {
@@ -30,6 +34,28 @@ public class ClientHandler extends Thread
             System.out.println("Error reading/writing from/to client");
         }
             
+    }
+    
+    public void readFile() {
+    	File dir = new File("./files/");
+    	  File[] directoryListing = dir.listFiles();
+    	  if (directoryListing != null) {
+    	    for (File child : directoryListing) {
+    	    	clientFile newFile = new clientFile(child, "");
+    	    	files.add(newFile);
+    	    }
+    	  } else {
+    	   
+    	  }
+    }
+    
+    public void refresh(String fileName) {
+    	
+    }
+    
+    public void checkIn() {
+    	
+    	
     }
     
     public void closeConnection() throws IOException
