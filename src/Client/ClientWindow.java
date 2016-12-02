@@ -27,7 +27,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 public class ClientWindow {
-
+//hey jon
 	private JFrame frmClient;
 	private JTextField textField;
 
