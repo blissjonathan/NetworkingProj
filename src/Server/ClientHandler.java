@@ -57,6 +57,7 @@ public class ClientHandler extends Thread
     
     public void refresh() {
     	
+    	this.getFiles();
     }
     
     public void checkIn() {
