@@ -164,6 +164,7 @@ public class ClientWindow {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					osw.write("Latest");
+					osw.flush();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
