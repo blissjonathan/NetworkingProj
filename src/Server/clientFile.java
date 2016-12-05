@@ -10,14 +10,23 @@ public class clientFile {
 	String lastUser;
 	String dateEdited;
 	String text;
+	boolean isOccupied = false;
 	
 	public clientFile(File _file) {
 		file = _file;
 		getData();
 	}
 	
-	private void setUser() {
-		
+	public void setActive() {
+		isOccupied = true;
+	}
+	
+	public void setInactive() {
+		isOccupied = false;
+	}
+	
+	public void setUser(String _user) {
+		lastUser = _user;
 	}
 
 	public String getName() {

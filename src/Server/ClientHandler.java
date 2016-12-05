@@ -20,6 +20,7 @@ public class ClientHandler extends Thread
     private OutputStreamWriter osw;
     ArrayList<clientFile> files = new ArrayList<clientFile>();
     private String userID;
+    private clientFile curFile;
     
     
     public ClientHandler(Socket conn)
@@ -46,6 +47,21 @@ public class ClientHandler extends Thread
     }
     
     public void checkIn() {
+    	String rFile = scanner.nextLine();
+    	for(int i = 0; i < Server.files.size(); i++) {
+    		if(Server.files.get(i).getName().equals(rFile)) {
+    			if(Server.files.get(i).isOccupied != true) {
+    			Server.files.get(i).setActive();
+    			curFile = Server.files.get(i);
+    			
+    			} else {
+    				//send occupied error
+    			}
+    			
+    		}
+    	}
+    	
+    
     	
     	
     }

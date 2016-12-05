@@ -27,6 +27,7 @@ import javax.swing.AbstractListModel;
 import javax.swing.JTextField;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JLabel;
 
 public class ClientWindow {
 
@@ -34,6 +35,7 @@ public class ClientWindow {
 	private JTextField textField;
 	private String userID;
 	private ArrayList<String> fileList = new ArrayList<String>();
+	private JList list;
 	
 	InputStream serverInput = null;
     OutputStream serverOutput = null;
@@ -106,13 +108,22 @@ public class ClientWindow {
 		JButton btnNewButton = new JButton("Check In");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
+					osw.write("Check In");
+					osw.flush();
+					osw.write(list.getSelectedValue().toString());
+					osw.flush();
+					} catch (IOException e1) {
+					
+					e1.printStackTrace();
+				}
 				
 			}
 		});
 		btnNewButton.setBounds(10, 27, 89, 23);
 		panel.add(btnNewButton);
 		
-		JList list = new JList();
+		list = new JList();
 		list.setModel(new AbstractListModel() {
 			String[] values = new String[] {"1", "2", "3", "4"};
 			public int getSize() {
@@ -135,16 +146,40 @@ public class ClientWindow {
 		panel.add(button);
 		
 		JButton button_1 = new JButton("Refresh");
+		button_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					osw.write("Refresh");
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 		button_1.setBounds(10, 100, 89, 23);
 		panel.add(button_1);
 		
 		JButton button_2 = new JButton("Latest");
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
+					osw.write("Latest");
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		button_2.setBounds(10, 136, 89, 23);
 		panel.add(button_2);
+		
+		JLabel lblLastUserEdited = new JLabel("Last User Edited:");
+		lblLastUserEdited.setBounds(10, 228, 89, 14);
+		panel.add(lblLastUserEdited);
+		
+		JLabel lblDateModified = new JLabel("Date Modified:");
+		lblDateModified.setBounds(10, 260, 89, 14);
+		panel.add(lblDateModified);
 		
 		JMenuBar menuBar = new JMenuBar();
 		frmClient.setJMenuBar(menuBar);
