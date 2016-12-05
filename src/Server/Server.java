@@ -1,14 +1,17 @@
 package Server;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 
 public class Server 
 {
     private ServerSocket server;
     private Socket clientConnection;
+    static ArrayList<clientFile> files = new ArrayList<clientFile>();
    
     private int portNumber;
         
@@ -44,6 +47,31 @@ public class Server
             System.out.println("Error terminating server connection");
         }
     }
+    
+    public static clientFile getFile(String _name) {
+    	clientFile rFile = null;
+    	
+    	for(int i = 0; i < files.size(); i++) {
+    	    if(files.get(i).getName().equals(_name)){
+    	     return files.get(i);
+    	     }
+    	 }		
+    	return rFile;   
+    }
+    
+    public static void getAllFiles() {
+    	files.clear();
+    	File dir = new File("./files/");
+    	  File[] directoryListing = dir.listFiles();
+    	  if (directoryListing != null) {
+    	    for (File child : directoryListing) {
+    	    	clientFile newFile = new clientFile(child);
+    	    	files.add(newFile);
+    	    }
+    	  } else {
+    	   
+    	  }
+    }
 
     /**
      * @param args the command line arguments
@@ -55,6 +83,7 @@ public class Server
         try
         {  
             server.start();
+            getAllFiles();
             
             while (true)
             {

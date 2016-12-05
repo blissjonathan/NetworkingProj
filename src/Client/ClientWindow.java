@@ -17,7 +17,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.UUID;
 
 import javax.swing.JComboBox;
 import javax.swing.JList;
@@ -27,9 +29,16 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 public class ClientWindow {
-//hey jon
+
 	private JFrame frmClient;
 	private JTextField textField;
+	private String userID;
+	private ArrayList<String> fileList = new ArrayList<String>();
+	
+	InputStream serverInput = null;
+    OutputStream serverOutput = null;
+    Scanner scan = null;
+    OutputStreamWriter osw = null;
 
 	/**
 	 * Launch the application.
@@ -58,11 +67,9 @@ public class ClientWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		
-		InputStream serverInput = null;
-        OutputStream serverOutput = null;
-        Scanner scan = null;
-        OutputStreamWriter osw = null;
+		userID = UUID.randomUUID().toString();
+		System.out.println("User ID set to: " + userID);
+
 
             Socket socket;
 			try {
@@ -73,6 +80,8 @@ public class ClientWindow {
 	            osw = new OutputStreamWriter(serverOutput);
 	            String message = scan.nextLine();
 	            System.out.println(message);
+	            osw.write(userID);
+	            osw.flush();
 	             
 	            Scanner keyboard = new Scanner(System.in);
 			} catch (UnknownHostException e1) {
@@ -142,5 +151,9 @@ public class ClientWindow {
 		
 		JMenuItem menuItem = new JMenuItem("File");
 		menuBar.add(menuItem);
+	}
+	
+	public void getList() {
+		
 	}
 }

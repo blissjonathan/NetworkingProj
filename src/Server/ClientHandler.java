@@ -19,6 +19,7 @@ public class ClientHandler extends Thread
     private Scanner scanner;
     private OutputStreamWriter osw;
     ArrayList<clientFile> files = new ArrayList<clientFile>();
+    private String userID;
     
     
     public ClientHandler(Socket conn)
@@ -39,42 +40,9 @@ public class ClientHandler extends Thread
             
     }
     
-    public void getFiles() {
-    	File dir = new File("./files/");
-    	  File[] directoryListing = dir.listFiles();
-    	  if (directoryListing != null) {
-    	    for (File child : directoryListing) {
-    	    	clientFile newFile = new clientFile(child, "");
-    	    	files.add(newFile);
-    	    }
-    	  } else {
-    	   
-    	  }
-    }
-    
-    public String readFile(String fileName) throws IOException {
-    	String output = "";
-    	String line = null;
-    	
-    		 FileReader fileReader;
-			try {
-				fileReader = new FileReader(fileName);
-				BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-	            while((line = bufferedReader.readLine()) != null) {
-	                output = output + line;
-	            }   
-	            bufferedReader.close();         
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-    	
-    	 return line;           
-    	}
-    
+   
     public void refresh() {
-    	
-    	this.getFiles();
+
     }
     
     public void checkIn() {
@@ -97,6 +65,11 @@ public class ClientHandler extends Thread
          connection.close();
     }
     
+    public void writeFile(String name) {
+    	clientFile wr = Server.getFile(name);
+    	
+    }
+    
     @Override
     public void run()
     {
@@ -105,6 +78,7 @@ public class ClientHandler extends Thread
         {
             osw.write("Welcome to Server\r\n");
             osw.flush();
+            userID = scanner.nextLine();
             while( true )
             {
             	String message = scanner.nextLine();
