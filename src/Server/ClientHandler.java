@@ -50,12 +50,16 @@ public class ClientHandler extends Thread
     	String rFile = scanner.nextLine();
     	for(int i = 0; i < Server.files.size(); i++) {
     		if(Server.files.get(i).getName().equals(rFile)) {
-    			if(Server.files.get(i).isOccupied != true) {
+    			if(userID.equals(Server.files.get(i).getUser())) {
     			Server.files.get(i).setActive();
     			curFile = Server.files.get(i);
     			
+    			while( true ) {
+    				
+    			}
+    			
     			} else {
-    				//send occupied error
+    				//send not owner error
     			}
     			
     		}
