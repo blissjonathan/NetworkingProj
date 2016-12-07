@@ -43,24 +43,36 @@ public class ClientHandler extends Thread
     
    
     public void refresh() {
+    	ArrayList<clientFile> getList = Server.files;
+    	for(int i = 0; i  < getList.size(); i++) {
+    		
+    	}
 
     }
     
-    public void checkIn() {
+    public void checkOut() {
     	String rFile = scanner.nextLine();
     	for(int i = 0; i < Server.files.size(); i++) {
     		if(Server.files.get(i).getName().equals(rFile)) {
-    			if(userID.equals(Server.files.get(i).getUser())) {
-    			Server.files.get(i).setActive();
-    			curFile = Server.files.get(i);
-    			
-    			while( true ) {
-    				
-    			}
-    			
+    			if(files.get(i).isActive()==false) {
+    			Server.files.get(i).setActive(); 
+    			Server.files.get(i).setUser(userID);
+    			try {
+					osw.write("Success");
+	    			osw.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
     			} else {
-    				//send not owner error
-    			}
+    				try {
+						osw.write("Fail");
+						osw.flush();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+    				}
     			
     		}
     	}
@@ -70,11 +82,29 @@ public class ClientHandler extends Thread
     	
     }
     
-    public void checkOut() {
+    public void checkIn() {
     	
     }
     
     public void getLatest() {
+    	ArrayList<clientFile> getList = Server.files;
+    	for(int i = 0; i  < getList.size(); i++) {
+    		try {
+				osw.write(getList.get(i).getName());
+				osw.flush();
+				osw.write(getList.get(i).toString());
+				osw.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	try {
+			osw.write("Finished Sending");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	
     }
     

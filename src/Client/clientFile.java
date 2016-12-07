@@ -1,4 +1,4 @@
-package Server;
+package Client;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,9 +17,6 @@ public class clientFile {
 		getData();
 	}
 	
-	public boolean isActive() {
-		return isOccupied;
-	}
 	public void setActive() {
 		isOccupied = true;
 	}
