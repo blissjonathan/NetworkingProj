@@ -44,7 +44,6 @@ public class ClientHandler extends Thread
     
    
     public void refresh() {
-<<<<<<< HEAD
     
     	for(int i = 0; i < Server.files.size(); i++) {
     		
@@ -54,14 +53,6 @@ public class ClientHandler extends Thread
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    
-=======
-    	ArrayList<clientFile> getList = Server.files;
-    	for(int i = 0; i  < getList.size(); i++) {
-    		
-    	}
-
->>>>>>> origin/master
     }
    }
   
