@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class ClientWindow {
 	private JFrame frmClient;
 	private JTextField textField;
 	private String userID;
-	private ArrayList<String> fileList = new ArrayList<String>();
+	private ArrayList<clientFile> files = new ArrayList<clientFile>();
 	private JList list;
 	
 	InputStream serverInput = null;
@@ -142,6 +143,24 @@ public class ClientWindow {
 		textField.setColumns(10);
 		
 		JButton button = new JButton("Check Out");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					osw.write("Check Out");
+					osw.flush();
+					osw.write(list.getSelectedValue().toString());
+					osw.flush();
+					if(scan.nextLine().equals("Success")) {
+						//put data into text editor
+					} else {
+						//File is active already
+					}
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 		button.setBounds(10, 61, 89, 23);
 		panel.add(button);
 		
@@ -168,13 +187,7 @@ public class ClientWindow {
 		JButton button_2 = new JButton("Latest");
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					osw.write("Latest");
-					osw.flush();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				getList();
 			}
 		});
 		button_2.setBounds(10, 136, 89, 23);
@@ -196,6 +209,26 @@ public class ClientWindow {
 	}
 	
 	public void getList() {
+		try {
+			osw.write("Latest");
+			osw.flush();
+			String message  = null;
+			while ( true ) {
+				message = scan.nextLine();
+				if(!(message.equals("Finished Sending"))) {
+					try{
+					    PrintWriter writer = new PrintWriter(message, "UTF-8");
+					    writer.println(scan.nextLine());
+					    writer.close();
+					} catch (IOException e) {
+					   // do something
+					}
+				}
+				
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
 }
