@@ -150,6 +150,12 @@ public class ClientWindow {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					osw.write("Refresh");
+					osw.flush();
+					while(true){
+					if(!scan.nextLine().equals("Refreshed")){
+						
+					}
+					}
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

@@ -36,6 +36,7 @@ public class ClientHandler extends Thread
         }
         catch(IOException e)
         {
+        	
             System.out.println("Error reading/writing from/to client");
         }
             
@@ -43,8 +44,20 @@ public class ClientHandler extends Thread
     
    
     public void refresh() {
-
+    
+    	for(int i = 0; i < Server.files.size(); i++) {
+    		
+    		try {
+				osw.write(Server.files.get(i).toString());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    
     }
+   }
+  
+ 
     
     public void checkIn() {
     	String rFile = scanner.nextLine();
