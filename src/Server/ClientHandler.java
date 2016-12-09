@@ -66,7 +66,7 @@ public class ClientHandler extends Thread
     			Server.files.get(i).setActive(); 
     			Server.files.get(i).setUser(userID);
     			try {
-					osw.write("Success");
+					osw.write("Success\r\n");
 	    			osw.flush();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -74,7 +74,7 @@ public class ClientHandler extends Thread
 				}
     			} else {
     				try {
-						osw.write("Fail");
+						osw.write("Fail\r\n");
 						osw.flush();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -98,9 +98,9 @@ public class ClientHandler extends Thread
     	ArrayList<clientFile> getList = Server.files;
     	for(int i = 0; i  < getList.size(); i++) {
     		try {
-				osw.write(getList.get(i).getName());
+				osw.write(getList.get(i).getName() + "\r\n");
 				osw.flush();
-				osw.write(getList.get(i).toString());
+				osw.write(getList.get(i).toString() + "\r\n");
 				osw.flush();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -108,7 +108,7 @@ public class ClientHandler extends Thread
 			}
     	}
     	try {
-			osw.write("Finished Sending");
+			osw.write("Finished Sending\r\n");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -137,6 +137,7 @@ public class ClientHandler extends Thread
             osw.write("Welcome to Server\r\n");
             osw.flush();
             userID = scanner.nextLine();
+            System.out.println("Set userID " + userID);
             while( true )
             {
             	String message = scanner.nextLine();
@@ -155,7 +156,6 @@ public class ClientHandler extends Thread
                 	if(message.equals("Latest")) {
                 		getLatest();
                 	}
-                    osw.write(message + "\r\n");
                     osw.flush();
                 }
                 else

@@ -67,6 +67,7 @@ public class Server
     	    for (File child : directoryListing) {
     	    	clientFile newFile = new clientFile(child);
     	    	files.add(newFile);
+    	    	System.out.println(newFile.toString() + "added");
     	    }
     	  } else {
     	   
@@ -83,6 +84,7 @@ public class Server
         try
         {  
             server.start();
+            System.out.println("Server started");
             getAllFiles();
             
             while (true)
