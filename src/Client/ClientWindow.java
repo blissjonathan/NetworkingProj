@@ -32,6 +32,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JLabel;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 public class ClientWindow {
 
 	private JFrame frmClient;
@@ -39,6 +42,11 @@ public class ClientWindow {
 	private String userID;
 	private ArrayList<clientFile> files = new ArrayList<clientFile>();
 	private JList list;
+	
+	JPanel panel;
+	
+	JLabel lblLastUserEdited;
+	JLabel lblDateModified;
 	
 	InputStream serverInput = null;
     OutputStream serverOutput = null;
@@ -101,11 +109,12 @@ public class ClientWindow {
 		
 		
 		frmClient = new JFrame();
+		frmClient.setResizable(false);
 		frmClient.setTitle("Client");
 		frmClient.setBounds(100, 100, 430, 407);
 		frmClient.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		frmClient.getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
@@ -128,6 +137,16 @@ public class ClientWindow {
 		panel.add(btnNewButton);
 		
 		list = new JList();
+		list.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				clientFile curFile = getFileInfo(list.getSelectedValue().toString());
+				lblLastUserEdited = new JLabel("Last user who modified: " + curFile.getUser());
+				lblDateModified = new JLabel("Date Modified: " + curFile.getDate());
+				panel.repaint();
+				panel.revalidate();
+			}
+		});
 		list.setModel(new AbstractListModel() {
 			String[] values = new String[] {"1", "2", "3", "4"};
 			public int getSize() {
@@ -196,19 +215,13 @@ public class ClientWindow {
 		button_2.setBounds(10, 136, 89, 23);
 		panel.add(button_2);
 		
-		JLabel lblLastUserEdited = new JLabel("Last User Edited:");
+		lblLastUserEdited = new JLabel("Last User Edited:");
 		lblLastUserEdited.setBounds(10, 228, 89, 14);
 		panel.add(lblLastUserEdited);
 		
-		JLabel lblDateModified = new JLabel("Date Modified:");
+		lblDateModified = new JLabel("Date Modified:");
 		lblDateModified.setBounds(10, 260, 89, 14);
 		panel.add(lblDateModified);
-		
-		JMenuBar menuBar = new JMenuBar();
-		frmClient.setJMenuBar(menuBar);
-		
-		JMenuItem menuItem = new JMenuItem("File");
-		menuBar.add(menuItem);
 		
 //		getList();
 //		refreshList();
@@ -245,12 +258,26 @@ public class ClientWindow {
 		
 	}
 	
+	public clientFile getFileInfo(String input) {
+		clientFile returnFile = null;
+		for(int i = 0; i < files.size(); i++) {
+			if(files.get(i).getName().equals(input)) {
+				returnFile = files.get(i);
+			}
+		}
+		return returnFile;
+	}
+	
 	public void refreshList() {
 		DefaultListModel<String> model = new DefaultListModel<>();
 		list = new JList<>( model );
 		for(int i = 0; i < files.size(); i++) {
 			model.addElement(files.get(i).getName());
 		}
+		list.revalidate();
+		list.repaint();
+		panel.revalidate();
+		panel.repaint();
 	}
 	
 }
