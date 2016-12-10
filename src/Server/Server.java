@@ -1,7 +1,10 @@
 package Server;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -46,6 +49,17 @@ public class Server
         {
             System.out.println("Error terminating server connection");
         }
+    }
+    
+    public void saveAllFiles() throws Exception {
+    	for(int i = 0; i < files.size(); i++) {
+    			PrintWriter writer;
+				writer = new PrintWriter(files.get(i).getName() + ".txt", "UTF-8");
+				System.out.println("Saved: " + files.get(i).getName());
+	    	    writer.println(files.get(i).toString());
+	    	    writer.close();
+    	}
+
     }
     
     public static clientFile getFile(String _name) {

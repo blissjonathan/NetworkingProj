@@ -173,7 +173,6 @@ public class ClientWindow {
 					osw.write(list.getSelectedValue().toString() + "\r\n");
 					osw.flush();
 					if(scan.nextLine().equals("Success")) {
-						//put data into text editor
 					} else {
 						//File is active already
 					}
