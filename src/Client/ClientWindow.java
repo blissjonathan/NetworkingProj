@@ -30,8 +30,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JLabel;
 
-import Server.ClientHandler;
-
 public class ClientWindow {
 
 	private JFrame frmClient;
@@ -174,16 +172,7 @@ public class ClientWindow {
 					osw.flush();
 					while(true){
 					if(!scan.nextLine().equals("Refreshed")){
-						//call getLatest
-						//currently accesses the local files array to loop
-						//but if the server got lots of updates before this client refreshes...
-						//then this loop will stop at the size of its previously saved array
-						for(int i=0;i<files.size();i++)
-						{
-							files.get(i).lastUser = scan.nextLine();
-							files.get(i).dateEdited = scan.nextLine();
-							
-						}
+						
 					}
 					}
 				} catch (IOException e1) {
