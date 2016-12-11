@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.UUID;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
@@ -209,6 +210,18 @@ public class ClientWindow {
 		menuBar.add(menuItem);
 	}
 	
+	
+	public void refreshList() {
+		DefaultListModel<String> model = new DefaultListModel<>();
+		list = new JList<>(model);
+
+		for ( int i = 0; i < files.size(); i++ ){
+		  model.addElement(files.get(i).getName());
+		}
+		list.revalidate();
+		list.repaint();
+	}
+	
 	public void getList() {
 		try {
 			osw.write("Latest\r\n");
@@ -217,7 +230,7 @@ public class ClientWindow {
 			String message  = null;
 			while ( true ) {
 				message = scan.nextLine();
-				if(!message.equals("Finished Sending")) {
+				if(!message.equals("Finished Sending\r\n")) {
 					try{
 					    PrintWriter writer = new PrintWriter(message + ".txt", "UTF-8");
 					    writer.println(scan.nextLine());
