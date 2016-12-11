@@ -223,8 +223,6 @@ public class ClientWindow {
 					} catch (IOException e) {
 					   // do something
 					}
-				} else {
-					break;
 				}
 				
 			}
