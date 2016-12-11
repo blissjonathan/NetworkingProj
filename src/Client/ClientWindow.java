@@ -230,10 +230,12 @@ public class ClientWindow {
 			String message  = null;
 			while ( true ) {
 				message = scan.nextLine();
-				if(!message.equals("Finished Sending\r\n")) {
+				if(!message.equals("Finished Sending")) {
+					System.out.println(message);
 					try{
 					    PrintWriter writer = new PrintWriter(message + ".txt", "UTF-8");
-					    writer.println(scan.nextLine());
+					    String data = scan.nextLine();
+					    writer.println(data);
 					    writer.close();
 					    File newFile = new File("./" + message + ".txt");
 					    clientFile curFile = new clientFile(newFile);
@@ -242,6 +244,7 @@ public class ClientWindow {
 					   System.out.println("Error downloading files");
 					}
 				} else {
+					System.out.println("Finished downloading files");
 					break;
 				}
 				

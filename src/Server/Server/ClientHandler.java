@@ -90,26 +90,18 @@ public class ClientHandler extends Thread
     	
     }
     
-    public void getLatest() {
+    public void getLatest() throws IOException {
     	ArrayList<clientFile> getList = Server.files;
     	for(int i = 0; i  < getList.size(); i++) {
-    		try {
 				osw.write(getList.get(i).getName() + "\r\n");
 				osw.flush();
 				osw.write(getList.get(i).toString() + "\r\n");
 				osw.flush();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
     	}
-    	try {
-			osw.write("Finished Sending\r\n");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
+    	osw.write("Finished Sending\r\n");
+    	osw.flush();
+    	osw.write("Finished Sending\r\n");
+		osw.flush();	
     }
     
     public void closeConnection() throws IOException
@@ -152,7 +144,7 @@ public class ClientHandler extends Thread
                 	if(message.equals("Latest")) {
                 		getLatest();
                 	}
-                    osw.flush();
+                    
                 }
                 else
                 {
