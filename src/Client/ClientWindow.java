@@ -27,6 +27,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -174,7 +175,7 @@ public class ClientWindow {
 					osw.flush();
 					if(scan.nextLine().equals("Success")) {
 					} else {
-						//File is active already
+						JOptionPane.showMessageDialog (null, "File is already active.", "Error", JOptionPane.ERROR_MESSAGE);
 					}
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block

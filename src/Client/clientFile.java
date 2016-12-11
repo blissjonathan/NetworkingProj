@@ -37,6 +37,14 @@ public class clientFile {
 		return text;
 	}
 	
+	public void setText(String _in) {
+		text = _in;
+	}
+	
+	public void setDate(String _in) {
+		dateEdited = _in;
+	}
+	
 	public String getDate() {
 		return dateEdited;
 	}
