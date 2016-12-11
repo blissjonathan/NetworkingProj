@@ -11,6 +11,7 @@ import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -83,7 +84,7 @@ public class ClientWindow {
 	            osw = new OutputStreamWriter(serverOutput);
 	            String message = scan.nextLine();
 	            System.out.println(message);
-	            osw.write(userID);
+	            osw.write(userID + "\r\n");
 	            osw.flush();
 	             
 	            Scanner keyboard = new Scanner(System.in);
@@ -110,9 +111,9 @@ public class ClientWindow {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					osw.write("Check In");
+					osw.write("Check In\r\n");
 					osw.flush();
-					osw.write(list.getSelectedValue().toString());
+					osw.write(list.getSelectedValue().toString() +"\r\n");
 					osw.flush();
 					} catch (IOException e1) {
 					
@@ -146,9 +147,9 @@ public class ClientWindow {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					osw.write("Check Out");
+					osw.write("Check Out\r\n");
 					osw.flush();
-					osw.write(list.getSelectedValue().toString());
+					osw.write(list.getSelectedValue().toString() + "\r\n");
 					osw.flush();
 					if(scan.nextLine().equals("Success")) {
 						//put data into text editor
@@ -168,7 +169,7 @@ public class ClientWindow {
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					osw.write("Refresh");
+					osw.write("Refresh\r\n");
 					osw.flush();
 					while(true){
 					if(!scan.nextLine().equals("Refreshed")){
@@ -210,19 +211,25 @@ public class ClientWindow {
 	
 	public void getList() {
 		try {
-			osw.write("Latest");
+			osw.write("Latest\r\n");
 			osw.flush();
+			files.clear();
 			String message  = null;
 			while ( true ) {
 				message = scan.nextLine();
-				if(!(message.equals("Finished Sending"))) {
+				if(!message.equals("Finished Sending")) {
 					try{
-					    PrintWriter writer = new PrintWriter(message, "UTF-8");
+					    PrintWriter writer = new PrintWriter(message + ".txt", "UTF-8");
 					    writer.println(scan.nextLine());
 					    writer.close();
+					    File newFile = new File("./" + message + ".txt");
+					    clientFile curFile = new clientFile(newFile);
+					    files.add(curFile);
 					} catch (IOException e) {
-					   // do something
+					   System.out.println("Error downloading files");
 					}
+				} else {
+					break;
 				}
 				
 			}

@@ -81,7 +81,7 @@ public class Server
     	    for (File child : directoryListing) {
     	    	clientFile newFile = new clientFile(child);
     	    	files.add(newFile);
-    	    	System.out.println(newFile.toString() + "added");
+    	    	System.out.println(newFile.getName() + " added");
     	    }
     	  } else {
     	   
