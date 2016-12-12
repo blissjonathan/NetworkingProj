@@ -61,6 +61,8 @@ public class ClientWindow {
     Scanner scan = null;
     OutputStreamWriter osw = null;
     
+    String curFile = null;
+    
     private boolean hasFile = false;
 
 	/**
@@ -94,7 +96,7 @@ public class ClientWindow {
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 		    public void run() {
 		       try {
-				osw.write("Exit");
+				osw.write("Exit\r\n");
 			    osw.flush();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -200,6 +202,7 @@ public class ClientWindow {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					if(hasFile == false) {
 					osw.write("Check Out\r\n");
 					osw.flush();
 //					System.out.println("Attempting to check out " + list.getSelectedValue().toString());
@@ -217,6 +220,9 @@ public class ClientWindow {
 						hasFile = true;
 					} else {
 						JOptionPane.showMessageDialog(panel, "File is in use.", "Error", JOptionPane.ERROR_MESSAGE);
+					}
+					} else {
+						JOptionPane.showMessageDialog(panel, "You have a file currently checked out. Check in first.", "Error", JOptionPane.ERROR_MESSAGE);
 					}
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
@@ -289,7 +295,7 @@ public class ClientWindow {
 	
 	
 	public void refreshList() {
-		
+		model.clear();
 		
 
 		for ( int i = 0; i < files.size(); i++ ){

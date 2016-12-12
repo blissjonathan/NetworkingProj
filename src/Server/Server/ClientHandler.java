@@ -23,7 +23,7 @@ public class ClientHandler extends Thread
     private OutputStreamWriter osw;
     ArrayList<clientFile> files = new ArrayList<clientFile>();
     private String userID;
-    private clientFile curFile;
+    private String curFile = null;
     
     
     public ClientHandler(Socket conn)
@@ -87,6 +87,7 @@ public class ClientHandler extends Thread
 	    			osw.flush();
 	    			osw.write(Server.files.get(i).getText() + "\r\n");
 	    			osw.flush();
+	    			curFile = rFile;
     			} else {
 						osw.write("Fail\r\n");
 						osw.flush();	
@@ -111,6 +112,7 @@ public class ClientHandler extends Thread
     			Server.files.get(i).setDate(dateFormat.format(date));
     			Server.files.get(i).setText(clientData);
     			System.out.println("Set all properties for file " + Server.files.get(i).getName());
+    			curFile = null;
     		}
     	}
     	Server.saveAllFiles();
@@ -130,6 +132,13 @@ public class ClientHandler extends Thread
     
     public void closeConnection() throws IOException
     {
+    	if(curFile != null) {
+    	for(int i = 0; i < Server.files.size(); i++) {
+    		if(Server.files.get(i).getName().equals(curFile)) {
+    			Server.files.get(i).setInactive();
+    		}
+    		}
+    	}
          osw.close();
          clientInput.close();
          connection.close();
