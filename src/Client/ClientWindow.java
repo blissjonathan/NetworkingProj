@@ -216,9 +216,20 @@ public class ClientWindow {
 				try {
 					osw.write("Refresh\r\n");
 					osw.flush();
+					getList();
 					while(true){
-					if(!scan.nextLine().equals("Refreshed")){
+						String message = scan.nextLine();
+					if(!message.equals("Refreshed")){
 						
+						for(int i=0;i<files.size();i++){
+							
+							files.get(i).setUser(scan.nextLine());
+							files.get(i).setDate(scan.nextLine());
+							if (scan.nextLine() == "true")
+								files.get(i).setActive();
+							else
+								files.get(i).setInactive();
+						}
 					}
 					}
 				} catch (IOException e1) {

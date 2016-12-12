@@ -51,12 +51,27 @@ public class ClientHandler extends Thread
     	for(int i = 0; i < Server.files.size(); i++) {
     		
     		try {
-				osw.write(Server.files.get(i).toString());
+    			osw.write(Server.files.get(i).getUser());
+				osw.flush();
+				osw.write(Server.files.get(i).getName()+"/r/n");
+				osw.flush();
+				osw.write(Boolean.toString(Server.files.get(i).isActive()));
+				osw.flush();
+				
+		
+				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
     }
+    	try {
+			osw.write("Refreshed \r\n");
+			osw.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
    }
   
  
