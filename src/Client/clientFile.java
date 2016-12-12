@@ -18,6 +18,9 @@ public class clientFile {
 		getData();
 	}
 	
+	public boolean isActive() {
+		return isOccupied;
+	}
 	public void setActive() {
 		isOccupied = true;
 	}

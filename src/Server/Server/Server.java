@@ -55,10 +55,10 @@ public class Server
     public static void saveAllFiles() throws Exception {
     	for(int i = 0; i < files.size(); i++) {
     			PrintWriter writer;
-				writer = new PrintWriter(files.get(i).getName() + ".txt", "UTF-8");
-				System.out.println("Saved: " + files.get(i).getName());
+				writer = new PrintWriter("./files/" + files.get(i).getName(), "UTF-8");
 	    	    writer.println(files.get(i).toString());
 	    	    writer.close();
+	    	    System.out.println("Saved: " + files.get(i).getName());
     	}
 
     }

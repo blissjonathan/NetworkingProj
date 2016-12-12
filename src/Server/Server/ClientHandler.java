@@ -76,45 +76,44 @@ public class ClientHandler extends Thread
   
  
     
-    public void checkOut() {
+    public void checkOut() throws IOException {
     	String rFile = scan.nextLine();
+    	System.out.println("Client is attempting to checkout " + rFile);
     	for(int i = 0; i < Server.files.size(); i++) {
     		if(Server.files.get(i).getName().equals(rFile)) {
-    			if(files.get(i).isActive()==false) {
-    			Server.files.get(i).setActive(); 
-    			try {
+    			if(Server.files.get(i).isActive()==false) {
+    				Server.files.get(i).setActive(); 
 					osw.write("Success\r\n");
 	    			osw.flush();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+	    			osw.write(Server.files.get(i).getText() + "\r\n");
+	    			osw.flush();
     			} else {
-    				try {
 						osw.write("Fail\r\n");
-						osw.flush();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-    				}
-    			
+						osw.flush();	
+    			}	
     		}
     	}
     }
     
-    public void checkIn() {
-    	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    public void checkIn() throws Exception {
+    	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
     	Date date = new Date();
     	//System.out.println(dateFormat.format(date));
     	String fName = scan.nextLine();
     	String clientData = scan.nextLine();
+    	
+    	System.out.println("Client is attempting to check in file with name and data: " + fName + clientData);
+    	
     	for(int i = 0; i < Server.files.size(); i++) {
     		if(Server.files.get(i).getName().equals(fName)) {
     			Server.files.get(i).setInactive();
     			Server.files.get(i).setUser(userID);
     			Server.files.get(i).setDate(dateFormat.format(date));
     			Server.files.get(i).setText(clientData);
+    			System.out.println("Set all properties for file " + Server.files.get(i).getName());
     		}
     	}
+    	Server.saveAllFiles();
     }
     
     public void getLatest() throws IOException {
@@ -157,7 +156,11 @@ public class ClientHandler extends Thread
                 if (!( message.equals("Exit")))
                 {
                 	if(message.equals("Check In")) {
-                		checkIn();
+                		try {
+							checkIn();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
                 	}
                 	if(message.equals("Check Out")) {
                 		checkOut();

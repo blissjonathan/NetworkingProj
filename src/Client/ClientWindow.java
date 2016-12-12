@@ -21,6 +21,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 import java.util.UUID;
 
 import javax.swing.DefaultListModel;
@@ -32,20 +33,28 @@ import javax.swing.JTextField;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JLabel;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 
 public class ClientWindow {
 
 	private JFrame frmClient;
-	private JTextField textField;
+	private JTextField txtField;
 	private String userID;
 	private ArrayList<clientFile> files = new ArrayList<clientFile>();
 	private JList list;
 	
+	JPanel panel;
+	
 	JLabel lblLastUserEdited;
 	JLabel lblDateModified;
+	JLabel lblIsOccupied;
+	
+	DefaultListModel<String> model;
 	
 	InputStream serverInput = null;
     OutputStream serverOutput = null;
@@ -124,7 +133,7 @@ public class ClientWindow {
 		frmClient.setBounds(100, 100, 430, 407);
 		frmClient.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		frmClient.getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
@@ -135,9 +144,12 @@ public class ClientWindow {
 				try {
 					osw.write("Check In\r\n");
 					osw.flush();
-					osw.write(list.getSelectedValue().toString() +"\r\n");
+//					StringTokenizer st = new StringTokenizer(list.getSelectedValue().toString(), ".");
+//					String sendName = st.nextToken();
+					System.out.println("Attempting to check in ");
+					osw.write(list.getSelectedValue().toString() + "\r\n");
 					osw.flush();
-					osw.write(textField.getText());
+					osw.write(txtField.getText() + "\r\n");
 					osw.flush();
 					hasFile = false;
 					} catch (IOException e1) {
@@ -150,40 +162,39 @@ public class ClientWindow {
 				
 			}
 		});
-		btnNewButton.setBounds(10, 27, 89, 23);
+		btnNewButton.setBounds(10, 27, 123, 23);
 		panel.add(btnNewButton);
 		
 		list = new JList();
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		model = new DefaultListModel<>();
+		list.setModel(model);
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				String tempFile = list.getSelectedValue().toString();
 				for(int i = 0; i < files.size(); i++) {
 					if(files.get(i).getName().equals(tempFile)) {
-						lblLastUserEdited.setText(files.get(i).getUser());
-						lblDateModified.setText(files.get(i).getDate());
+						lblLastUserEdited.setText("Last User: " + files.get(i).getUser());
+						lblDateModified.setText("Date Modified: " + files.get(i).getDate());
+						lblIsOccupied.setText("Is Occupied: " + files.get(i).isOccupied);
+						
+						lblLastUserEdited.setSize(lblLastUserEdited.getPreferredSize());
+						lblDateModified.setSize(lblDateModified.getPreferredSize());
 						
 					}
 				}
 			}
 		});
-		list.setModel(new AbstractListModel() {
-			String[] values = new String[] {"1", "2", "3", "4"};
-			public int getSize() {
-				return values.length;
-			}
-			public Object getElementAt(int index) {
-				return values[index];
-			}
-		});
+
 		list.setBounds(200, 20, 204, 64);
 		panel.add(list);
 		
-		textField = new JTextField();
-		textField.setBounds(200, 95, 204, 238);
-		panel.add(textField);
-		textField.setColumns(10);
+		txtField = new JTextField();
+		txtField.setHorizontalAlignment(SwingConstants.CENTER);
+		txtField.setBounds(200, 95, 204, 238);
+		panel.add(txtField);
+		txtField.setColumns(10);
 		
 		JButton button = new JButton("Check Out");
 		button.addActionListener(new ActionListener() {
@@ -191,12 +202,18 @@ public class ClientWindow {
 				try {
 					osw.write("Check Out\r\n");
 					osw.flush();
+//					System.out.println("Attempting to check out " + list.getSelectedValue().toString());
+//					StringTokenizer st  = new StringTokenizer(list.getSelectedValue().toString(), ".");
+//					String sendName = st.nextToken();
 					osw.write(list.getSelectedValue().toString() + "\r\n");
 					osw.flush();
-					if(scan.nextLine().equals("Success")) {
+					String message = scan.nextLine();
+					System.out.println("Got message: " + message);
+					if(message.equals("Success")) {
 						String data = scan.nextLine();
-						textField.setText(data);
-						textField.repaint();
+						System.out.println("Got text data from file: " + data );
+						txtField.setText(data);
+						txtField.repaint();
 						hasFile = true;
 					} else {
 						JOptionPane.showMessageDialog(panel, "File is in use.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -207,7 +224,7 @@ public class ClientWindow {
 				}
 			}
 		});
-		button.setBounds(10, 61, 89, 23);
+		button.setBounds(10, 61, 123, 23);
 		panel.add(button);
 		
 		JButton button_1 = new JButton("Refresh");
@@ -238,37 +255,50 @@ public class ClientWindow {
 				}
 			}
 		});
-		button_1.setBounds(10, 100, 89, 23);
+		button_1.setBounds(10, 100, 123, 23);
 		panel.add(button_1);
 		
 		JButton button_2 = new JButton("Latest");
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				getList();
+				refreshList();
 			}
 		});
-		button_2.setBounds(10, 136, 89, 23);
+		button_2.setBounds(10, 136, 123, 23);
 		panel.add(button_2);
 		
 		lblLastUserEdited = new JLabel("Last User Edited:");
-		lblLastUserEdited.setBounds(10, 228, 89, 14);
+		lblLastUserEdited.setVerticalAlignment(SwingConstants.TOP);
+		lblLastUserEdited.setBounds(10, 170, 180, 71);
 		panel.add(lblLastUserEdited);
 		
 		lblDateModified = new JLabel("Date Modified:");
-		lblDateModified.setBounds(10, 260, 89, 14);
+		lblDateModified.setVerticalAlignment(SwingConstants.TOP);
+		lblDateModified.setBounds(10, 260, 180, 38);
 		panel.add(lblDateModified);
+		
+		lblIsOccupied = new JLabel("Is Occupied:");
+		lblIsOccupied.setVerticalAlignment(SwingConstants.TOP);
+		lblIsOccupied.setBounds(10, 319, 180, 23);
+		panel.add(lblIsOccupied);
+		
+		getList();
+		refreshList();
 	}
 	
 	
 	public void refreshList() {
-		DefaultListModel<String> model = new DefaultListModel<>();
-		list = new JList<>(model);
+		
+		
 
 		for ( int i = 0; i < files.size(); i++ ){
 		  model.addElement(files.get(i).getName());
 		}
-		list.revalidate();
-		list.repaint();
+		
+		panel.revalidate();
+		panel.repaint();
+		
 	}
 	
 	public void getList() {
@@ -282,11 +312,11 @@ public class ClientWindow {
 				if(!message.equals("Finished Sending")) {
 					System.out.println(message);
 					try{
-					    PrintWriter writer = new PrintWriter(message + ".txt", "UTF-8");
+					    PrintWriter writer = new PrintWriter(message, "UTF-8");
 					    String data = scan.nextLine();
 					    writer.println(data);
 					    writer.close();
-					    File newFile = new File("./" + message + ".txt");
+					    File newFile = new File("./" + message);
 					    clientFile curFile = new clientFile(newFile);
 					    if(curFile.check() == true) {
 					    files.add(curFile);
