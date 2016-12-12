@@ -8,7 +8,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 public class ClientHandler extends Thread
@@ -16,7 +19,7 @@ public class ClientHandler extends Thread
     private Socket connection;
     private InputStream clientInput;
     private OutputStream clientOutput;
-    private Scanner scanner;
+    private Scanner scan;
     private OutputStreamWriter osw;
     ArrayList<clientFile> files = new ArrayList<clientFile>();
     private String userID;
@@ -31,7 +34,7 @@ public class ClientHandler extends Thread
         {
             clientInput = connection.getInputStream();
             clientOutput = connection.getOutputStream();
-            scanner = new Scanner(clientInput);
+            scan = new Scanner(clientInput);
             osw = new OutputStreamWriter(clientOutput);
         }
         catch(IOException e)
@@ -59,17 +62,15 @@ public class ClientHandler extends Thread
  
     
     public void checkOut() {
-    	String rFile = scanner.nextLine();
+    	String rFile = scan.nextLine();
     	for(int i = 0; i < Server.files.size(); i++) {
     		if(Server.files.get(i).getName().equals(rFile)) {
     			if(files.get(i).isActive()==false) {
     			Server.files.get(i).setActive(); 
-    			Server.files.get(i).setUser(userID);
     			try {
 					osw.write("Success\r\n");
 	    			osw.flush();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
     			} else {
@@ -77,7 +78,6 @@ public class ClientHandler extends Thread
 						osw.write("Fail\r\n");
 						osw.flush();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
     				}
@@ -87,7 +87,19 @@ public class ClientHandler extends Thread
     }
     
     public void checkIn() {
-    	
+    	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    	Date date = new Date();
+    	//System.out.println(dateFormat.format(date));
+    	String fName = scan.nextLine();
+    	String clientData = scan.nextLine();
+    	for(int i = 0; i < Server.files.size(); i++) {
+    		if(Server.files.get(i).getName().equals(fName)) {
+    			Server.files.get(i).setInactive();
+    			Server.files.get(i).setUser(userID);
+    			Server.files.get(i).setDate(dateFormat.format(date));
+    			Server.files.get(i).setText(clientData);
+    		}
+    	}
     }
     
     public void getLatest() throws IOException {
@@ -98,8 +110,6 @@ public class ClientHandler extends Thread
 				osw.write(getList.get(i).toString() + "\r\n");
 				osw.flush();
     	}
-    	osw.write("Finished Sending\r\n");
-    	osw.flush();
     	osw.write("Finished Sending\r\n");
 		osw.flush();	
     }
@@ -124,11 +134,11 @@ public class ClientHandler extends Thread
         {
             osw.write("Welcome to Server\r\n");
             osw.flush();
-            userID = scanner.nextLine();
+            userID = scan.nextLine();
             System.out.println("Set userID " + userID);
             while( true )
             {
-            	String message = scanner.nextLine();
+            	String message = scan.nextLine();
                 if (!( message.equals("Exit")))
                 {
                 	if(message.equals("Check In")) {

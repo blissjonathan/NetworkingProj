@@ -12,11 +12,12 @@ import java.util.ArrayList;
 
 public class Server 
 {
-    private ServerSocket server;
+    private static ServerSocket server;
     private Socket clientConnection;
     static ArrayList<clientFile> files = new ArrayList<clientFile>();
    
     private int portNumber;
+    
         
     public Server(int portNumber)
     {
@@ -39,7 +40,7 @@ public class Server
         
     }
     
-    public void terminate() 
+    public static void terminate() 
     {
         try
         {
@@ -51,7 +52,7 @@ public class Server
         }
     }
     
-    public void saveAllFiles() throws Exception {
+    public static void saveAllFiles() throws Exception {
     	for(int i = 0; i < files.size(); i++) {
     			PrintWriter writer;
 				writer = new PrintWriter(files.get(i).getName() + ".txt", "UTF-8");
@@ -93,6 +94,18 @@ public class Server
      */
     public static void main(String[] args) 
     {
+    	
+    	Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+    	    public void run() {
+    	        try {
+					saveAllFiles();
+					terminate();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+    	    }
+    	}));
+    	
         Server server = new Server(5021);
         
         try

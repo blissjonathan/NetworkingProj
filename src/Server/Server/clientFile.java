@@ -11,6 +11,7 @@ public class clientFile {
 	String dateEdited;
 	String text;
 	boolean isOccupied = false;
+	boolean isReal; //Super not okay
 	
 	public clientFile(File _file) {
 		file = _file;
@@ -61,6 +62,10 @@ public class clientFile {
 		
 	}
 	
+	public boolean check() {
+		return isReal;
+	}
+	
 	public String getData() {
 		String data = null;
 		String lineSeparator = System.getProperty("line.separator");
@@ -73,8 +78,13 @@ public class clientFile {
 			        }
 			        StringTokenizer st = new StringTokenizer(fileContents.toString(),"/:/");
 			        text = st.nextToken();
+			        if(st.hasMoreTokens() == true) {
 			        lastUser = st.nextToken();
 			        dateEdited = st.nextToken();
+			        isReal = true;
+			        } else {
+			        isReal = false;
+			        }
 //			        return fileContents.toString();
 			    } finally {
 			        scan.close();

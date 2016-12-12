@@ -27,10 +27,14 @@ import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JLabel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.ListSelectionModel;
 
 public class ClientWindow {
 
@@ -40,10 +44,15 @@ public class ClientWindow {
 	private ArrayList<clientFile> files = new ArrayList<clientFile>();
 	private JList list;
 	
+	JLabel lblLastUserEdited;
+	JLabel lblDateModified;
+	
 	InputStream serverInput = null;
     OutputStream serverOutput = null;
     Scanner scan = null;
     OutputStreamWriter osw = null;
+    
+    private boolean hasFile = false;
 
 	/**
 	 * Launch the application.
@@ -72,6 +81,18 @@ public class ClientWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+		    public void run() {
+		       try {
+				osw.write("Exit");
+			    osw.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		    }
+		}));
+		
 		userID = UUID.randomUUID().toString();
 		System.out.println("User ID set to: " + userID);
 
@@ -87,8 +108,7 @@ public class ClientWindow {
 	            System.out.println(message);
 	            osw.write(userID + "\r\n");
 	            osw.flush();
-	             
-	            Scanner keyboard = new Scanner(System.in);
+	            
 			} catch (UnknownHostException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -111,15 +131,22 @@ public class ClientWindow {
 		JButton btnNewButton = new JButton("Check In");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(hasFile == true) {
 				try {
 					osw.write("Check In\r\n");
 					osw.flush();
 					osw.write(list.getSelectedValue().toString() +"\r\n");
 					osw.flush();
+					osw.write(textField.getText());
+					osw.flush();
+					hasFile = false;
 					} catch (IOException e1) {
 					
 					e1.printStackTrace();
 				}
+			} else {	
+				JOptionPane.showMessageDialog(panel, "You have not checked out a file.", "Error", JOptionPane.ERROR_MESSAGE);
+			}
 				
 			}
 		});
@@ -127,6 +154,20 @@ public class ClientWindow {
 		panel.add(btnNewButton);
 		
 		list = new JList();
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		list.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				String tempFile = list.getSelectedValue().toString();
+				for(int i = 0; i < files.size(); i++) {
+					if(files.get(i).getName().equals(tempFile)) {
+						lblLastUserEdited.setText(files.get(i).getUser());
+						lblDateModified.setText(files.get(i).getDate());
+						
+					}
+				}
+			}
+		});
 		list.setModel(new AbstractListModel() {
 			String[] values = new String[] {"1", "2", "3", "4"};
 			public int getSize() {
@@ -153,9 +194,12 @@ public class ClientWindow {
 					osw.write(list.getSelectedValue().toString() + "\r\n");
 					osw.flush();
 					if(scan.nextLine().equals("Success")) {
-						//put data into text editor
+						String data = scan.nextLine();
+						textField.setText(data);
+						textField.repaint();
+						hasFile = true;
 					} else {
-						//File is active already
+						JOptionPane.showMessageDialog(panel, "File is in use.", "Error", JOptionPane.ERROR_MESSAGE);
 					}
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
@@ -195,19 +239,13 @@ public class ClientWindow {
 		button_2.setBounds(10, 136, 89, 23);
 		panel.add(button_2);
 		
-		JLabel lblLastUserEdited = new JLabel("Last User Edited:");
+		lblLastUserEdited = new JLabel("Last User Edited:");
 		lblLastUserEdited.setBounds(10, 228, 89, 14);
 		panel.add(lblLastUserEdited);
 		
-		JLabel lblDateModified = new JLabel("Date Modified:");
+		lblDateModified = new JLabel("Date Modified:");
 		lblDateModified.setBounds(10, 260, 89, 14);
 		panel.add(lblDateModified);
-		
-		JMenuBar menuBar = new JMenuBar();
-		frmClient.setJMenuBar(menuBar);
-		
-		JMenuItem menuItem = new JMenuItem("File");
-		menuBar.add(menuItem);
 	}
 	
 	
@@ -239,7 +277,14 @@ public class ClientWindow {
 					    writer.close();
 					    File newFile = new File("./" + message + ".txt");
 					    clientFile curFile = new clientFile(newFile);
+					    if(curFile.check() == true) {
 					    files.add(curFile);
+					    } else {
+					    	//bad sending message...
+					    	newFile.delete();
+					    	System.out.println("downloaded bad file");
+					    	break;
+					    }
 					} catch (IOException e) {
 					   System.out.println("Error downloading files");
 					}
