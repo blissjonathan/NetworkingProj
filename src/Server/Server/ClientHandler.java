@@ -46,32 +46,16 @@ public class ClientHandler extends Thread
     }
     
    
-    public void refresh() {
+    public void refresh() throws IOException {
     
     	for(int i = 0; i < Server.files.size(); i++) {
-    		
-    		try {
-    			osw.write(Server.files.get(i).getUser());
+    			osw.write(Server.files.get(i).getName() + "\r\n");
+    			osw.flush();
+				osw.write(Server.files.get(i).isOccupied + "\r\n");
 				osw.flush();
-				osw.write(Server.files.get(i).getName()+"/r/n");
-				osw.flush();
-				osw.write(Boolean.toString(Server.files.get(i).isActive()));
-				osw.flush();
-				
-		
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
     }
-    	try {
-			osw.write("Refreshed \r\n");
+			osw.write("Refreshed\r\n");
 			osw.flush();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
    }
   
  

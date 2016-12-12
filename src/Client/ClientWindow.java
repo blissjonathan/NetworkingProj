@@ -29,6 +29,7 @@ import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -50,9 +51,9 @@ public class ClientWindow {
 	
 	JPanel panel;
 	
-	JLabel lblLastUserEdited;
-	JLabel lblDateModified;
-	JLabel lblIsOccupied;
+	JTextArea lblLastUserEdited;
+	JTextArea lblDateModified;
+	JTextArea lblIsOccupied;
 	
 	DefaultListModel<String> model;
 	
@@ -154,6 +155,7 @@ public class ClientWindow {
 					osw.write(txtField.getText() + "\r\n");
 					osw.flush();
 					hasFile = false;
+					txtField.setText("");
 					} catch (IOException e1) {
 					
 					e1.printStackTrace();
@@ -237,24 +239,48 @@ public class ClientWindow {
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					getList();
 					osw.write("Refresh\r\n");
 					osw.flush();
-					getList();
-					while(true){
+
+					while(true) {
 						String message = scan.nextLine();
-					if(!message.equals("Refreshed")){
-						
-						for(int i=0;i<files.size();i++){
-							
-							files.get(i).setUser(scan.nextLine());
-							files.get(i).setDate(scan.nextLine());
-							if (scan.nextLine() == "true")
-								files.get(i).setActive();
-							else
-								files.get(i).setInactive();
+						if(!message.equals("Refreshed")) {
+							String fName = message;
+							String isActive = scan.nextLine();
+							for(int i =0;  i < files.size(); i++) {
+								if(files.get(i).getName().equals(fName)) {
+									if(isActive.equalsIgnoreCase("true")) {
+										files.get(i).setActive();
+									}
+									
+									if(isActive.equalsIgnoreCase("false")) {
+										files.get(i).setInactive();
+									}
+								}
+							}
+						} else {
+							break;
 						}
 					}
-					}
+					refreshList();
+					
+					
+//					while(true){								//OLD CODE
+//						String message = scan.nextLine();
+//					if(!message.equals("Refreshed")){
+//						
+//						for(int i=0;i<files.size();i++){
+//							
+//							files.get(i).setUser(scan.nextLine());
+//							files.get(i).setDate(scan.nextLine());
+//							if (scan.nextLine() == "true")
+//								files.get(i).setActive();
+//							else
+//								files.get(i).setInactive();
+//						}
+//					}
+//					}
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -274,19 +300,24 @@ public class ClientWindow {
 		button_2.setBounds(10, 136, 123, 23);
 		panel.add(button_2);
 		
-		lblLastUserEdited = new JLabel("Last User Edited:");
-		lblLastUserEdited.setVerticalAlignment(SwingConstants.TOP);
+		lblLastUserEdited = new JTextArea("Last User Edited:");
+		lblLastUserEdited.setRows(4);
+		lblLastUserEdited.setLineWrap(true);
+		lblLastUserEdited.setEditable(false);
 		lblLastUserEdited.setBounds(10, 170, 180, 71);
 		panel.add(lblLastUserEdited);
 		
-		lblDateModified = new JLabel("Date Modified:");
-		lblDateModified.setVerticalAlignment(SwingConstants.TOP);
-		lblDateModified.setBounds(10, 260, 180, 38);
+		lblDateModified = new JTextArea("Date Modified:");
+		lblDateModified.setRows(4);
+		lblDateModified.setLineWrap(true);
+		lblDateModified.setEditable(false);
+		lblDateModified.setBounds(10, 252, 180, 71);
 		panel.add(lblDateModified);
 		
-		lblIsOccupied = new JLabel("Is Occupied:");
-		lblIsOccupied.setVerticalAlignment(SwingConstants.TOP);
-		lblIsOccupied.setBounds(10, 319, 180, 23);
+		lblIsOccupied = new JTextArea("Is Occupied:");
+		lblIsOccupied.setLineWrap(true);
+		lblIsOccupied.setEditable(false);
+		lblIsOccupied.setBounds(10, 334, 180, 23);
 		panel.add(lblIsOccupied);
 		
 		getList();
