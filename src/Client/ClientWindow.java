@@ -132,7 +132,7 @@ public class ClientWindow {
 		
 		
 		frmClient = new JFrame();
-		frmClient.setTitle("Client");
+		frmClient.setTitle("Client - " + userID);
 		frmClient.setBounds(100, 100, 430, 407);
 		frmClient.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
