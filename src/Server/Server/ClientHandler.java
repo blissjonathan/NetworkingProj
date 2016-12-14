@@ -103,6 +103,7 @@ public class ClientHandler extends Thread
     }
     
     public void getLatest() throws IOException {
+    	Server.getAllFiles();
     	ArrayList<clientFile> getList = Server.files;
     	for(int i = 0; i  < getList.size(); i++) {
 				osw.write(getList.get(i).getName() + "\r\n");
